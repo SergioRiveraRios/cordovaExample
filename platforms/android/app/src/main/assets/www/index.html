@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Capture Photo</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" 
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script src="https://kit.fontawesome.com/5eeee87fa8.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+    
+    
+    var pictureSource;   // Fuente de la imagen
+    var destinationType; // Pone el fomrato del valor regresado
+    
+    // Espera a que carge las API
+    //
+    document.addEventListener("deviceready",onDeviceReady,false);
+
+    // Una vez disponibles
+    //
+    function onDeviceReady() {
+        pictureSource=navigator.camera.PictureSourceType;
+        destinationType=navigator.camera.DestinationType;
+    }
+
+    // Se manda a llamar cuando la foto es realizada
+    //
+    function onPhotoDataSuccess(imageData) {
+      // Obtiene la imagen
+      //
+      var smallImage = document.getElementById('smallImage');
+
+      // Elementos de la imagen
+      //
+      smallImage.style.display = 'block';
+
+      // Muestra la foto tomada
+      //
+      smallImage.src = "data:image/png;base64," + imageData;
+    }
+
+    // Mandada a llamar con la foto
+    //
+    function onPhotoURISuccess(imageURI) {
+
+      // Obtiene imagen
+      //
+      var largeImage = document.getElementById('largeImage');
+
+      // Elementos de la foto
+      //
+      largeImage.style.display = 'block';
+
+      // Muestra la foto realizada
+      //
+      largeImage.src = imageURI;
+    }
+
+
+    function capturePhotoEdit() {
+      // Toma foto y te deja recortarla
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50, allowEdit: true,
+        destinationType: destinationType.DATA_URL,
+        saveToPhotoAlbum: true });
+    }
+
+    // A button will call this function
+    //
+    function getPhoto(source) {
+      // Regresa la localización de la imagen 
+      navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50,
+        destinationType: destinationType.FILE_URI,
+        sourceType: source });
+    }
+
+    // Se ejecuta cuando hay un error.
+    //
+    function onFail(message) {
+      alert('Failed because: ' + message);
+    }
+
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-text">
+            App Hibrida con Cordova
+          </span>
+      </nav>
+    
+    <br>
+    <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-12 gridcam">
+                    <img src="img/cam2.png" class="rounded mx-auto d-block" alt="Responsive image" width="100px" height="100px">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="capturePhotoEdit();">Tomar foto</button> 
+                </div>
+                <br>
+            </div>
+            <br>
+            <br>
+            <div class="row justify-content-center">
+                <div class="col gridcam">
+                    <img src="img/gal.png" class="rounded mx-auto d-block" alt="Responsive image" width="100px" height="100px" >
+                    <button class="btn btn-primary btn-lg btn-block" onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">Abrir Galeria</button><br>
+                </div>
+            </div>
+    </div>
+    <hr>
+    <div>Recientes</div>
+    <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
+    <img style="display:none;" id="largeImage" src="" />
+    
+  </body>
+</html>
